@@ -33,3 +33,6 @@ for(auto idx : cube_idxs) {
     }
 }
 ```
+## General case.
+
+Spatial hash represents a discrete grid in 2D / 3D space.  For any search operation in continuous Euclidean space it is possible to create a search operation in discrete space that includes continuous space search result. That reduces time complexity from **O(n)** to **O(m)** where **n** - number of points and **m** - number of cells in the hash. Optimal cell size is necessary for optimal performance for specific cases.
