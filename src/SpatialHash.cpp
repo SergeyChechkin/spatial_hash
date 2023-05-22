@@ -3,5 +3,4 @@
 /// Autor: Sergey Chechkin, schechkin@gmail.com 
 
 #include "spatial_hash/SpatialHash2DVector.h"
-#include "spatial_hash/SpatialHash2D.h"
-#include "spatial_hash/HashContainers.h"
+#include "spatial_hash/SpatialHash3DVector.h"

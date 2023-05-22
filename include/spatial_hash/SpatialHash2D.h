@@ -79,8 +79,16 @@ public:
         return table_;
     } 
 
+    /// @brief Returns cell size.
+    /// @return - cell size
     DataType GetCellSize() const {
         return cell_size_;
+    } 
+
+    /// @brief Returns inverse cell size.  
+    /// @return - inverse cell size
+    DataType GetInvVoxelSize() const {
+        return inv_cell_size_;
     } 
 
     /// @brief Add value to hash table
@@ -102,11 +110,23 @@ public:
     }
 
 protected:
+    /// @brief Search data for specific cell. 
+    /// @param cell_idx - cell index
+    /// @return cell container 
+    const ContainerType* GetCell(HashIndex2D cell_idx) const {
+        auto itr = table_.find(cell_idx);
+        if(table_.end() == itr) {
+            return nullptr;
+        }
+
+        return &(itr->second);
+    } 
+
     /// @brief Search all populated cells in (2 * half_size + 1) square of cells with "center" cell in center
     /// @param center - center cell
-    /// @param half_size - half size of the search cube
+    /// @param half_size - half size of the search square
     /// @return Return all populated cells in square
-    std::vector<const ContainerType*> SquareSearch(HashIndex2D center, uint32_t half_size) const {
+    std::vector<const ContainerType*> SquareSearch(HashIndex2D center, int32_t half_size) const {
         std::vector<const ContainerType*> result;
         
         HashIndex2D grid_point;
