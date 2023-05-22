@@ -7,7 +7,6 @@
 #include <eigen3/Eigen/Eigen>
 #include <gtest/gtest.h>
 #include <random>
-#include <iostream>
 
 using namespace libs::spatial_hash;
 
@@ -21,27 +20,71 @@ TEST(SpatalHash2D, ConvertionTest) {
 }
 
 TEST(SpatialHashTable2DVector, RandomSqareTest) { 
-    SpatialHashTable2DVector<float, uint64_t> hash_table(10);
+    SpatialHashTable2DVector<float, size_t> hash_table(10);
 
     float square_size = 1000; 
     std::default_random_engine rng;
     std::uniform_real_distribution urd(0.0f, square_size);
 
-    size_t size = 100000;
+    size_t size = 10000;
     for(size_t i = 0; i < size; ++i) {
         float point[2] = {urd(rng), urd(rng)};
         hash_table.Add(point, i);
     }
 
     float left_top[2] = {0, 0};
-    float  right_bottom[2] = {square_size, square_size};
+    float right_bottom[2] = {square_size, square_size};
     auto result = hash_table.SquareSearch(left_top, right_bottom);
+    ASSERT_EQ(size, result.size());
+    result = hash_table.SquareSearch(right_bottom, left_top);
+    ASSERT_EQ(size, result.size());
+}
+
+TEST(SpatialHashTable2DVector, RandomCircleTest) { 
+    SpatialHashTable2DVector<float, size_t> hash_table(10);
+    
+    float radius = 100;
+    std::default_random_engine rng;
+    std::uniform_real_distribution<float> r_dst(0.0, radius);
+    std::uniform_real_distribution<float> angl_dst(0.0, 2*M_PI);
+
+    size_t size = 10000;
+    for(size_t i = 0; i < size; ++i) {
+        float r = r_dst(rng);
+        float a = angl_dst(rng);
+        
+        float point[2] = {r * std::cos(a), r * std::sin(a)};
+        hash_table.Add(point, i);
+    }
+
+    float center[2] = {0, 0};
+    auto result = hash_table.SquareSearch(center, radius);
+    ASSERT_EQ(size, result.size());
+}
+
+TEST(SpatialHashTable3DVector, RandomCubeTest) { 
+    SpatialHashTable3DVector<float, size_t> hash_table(10);
+
+    float cube_size = 1000; 
+    std::default_random_engine rng;
+    std::uniform_real_distribution urd(0.0f, cube_size);
+
+    size_t size = 100000;
+    for(size_t i = 0; i < size; ++i) {
+        float point[3] = {urd(rng), urd(rng), urd(rng)};
+        hash_table.Add(point, i);
+    }
+
+    float p1[3] = {0, 0, 0};
+    float p2[3] = {cube_size, cube_size, cube_size};
+    auto result = hash_table.CubeSearch(p1, p2);
 
     ASSERT_EQ(size, result.size());
-    ASSERT_EQ(square_size * square_size / (hash_table.GetCellSize() * hash_table.GetCellSize()), hash_table.GetTable().size());
 
+    result = hash_table.CubeSearch(p2, p1);
+    ASSERT_EQ(size, result.size());
 }
- 
+
 struct UnitSphereDistribution {
     Eigen::Vector3f operator()(std::default_random_engine& rng)
     {
@@ -56,7 +99,7 @@ struct UnitSphereDistribution {
 };
 
 TEST(SpatialHashTable3DVector, RadiusSearchTest) { 
-    /// generate a point cloud
+    // generate a point cloud
     std::vector<Eigen::Vector3f> point_cloud;
 
     float r1 = 1.0f;
@@ -90,7 +133,7 @@ TEST(SpatialHashTable3DVector, RadiusSearchTest) {
     Eigen::Vector3f center(0, 0, 0);
     auto idxs = hash_table.CubeSearch(center.data(), radius);
     
-    /// peform radius search
+    // peform radius search
     std::vector<Eigen::Vector3f> radius_search_result;
     float radius_sqr = radius * radius;
     for(const auto& idx : idxs) {

@@ -25,7 +25,7 @@ public:
     /// @brief Search all data references in specified square. Square parameters in discrete hash table space.
     /// @param center_cell - center cell
     /// @param half_size - half square size 
-    /// @return - all data references in the square  
+    /// @return all data references in the square  
     std::vector<RefType> SquareSearch(HashIndex2D center_cell, int32_t half_size) const {
         std::vector<RefType> result;
         std::vector<const CellType*> cells = BaseClass::SquareSearch(center_cell, half_size);
@@ -35,33 +35,38 @@ public:
         return result;
     }
 
-    /// @brief Search cells in square, that defined by two points
+    /// @brief Search all data references in specified square. Square parameters in discrete hash table space.
     /// @param left_top - left top corner 
-    /// @param right_bottom  - right bottom corner
-    /// @return - all data references in the square 
-    std::vector<RefType> SquareSearch(DataType left_top[2], DataType right_bottom[2]) const {
+    /// @param right_bottom - right bottom corner 
+    /// @return all data references in the square
+    std::vector<RefType> SquareSearch(HashIndex2D left_top, HashIndex2D right_bottom) const {
         std::vector<RefType> result;
-        HashIndex2D lt_index = BaseClass::GetCellIndex(left_top);
-        HashIndex2D rb_index = BaseClass::GetCellIndex(right_bottom);
-        std::vector<const CellType*> cells = BaseClass::SquareSearch(lt_index, rb_index);
+        std::vector<const CellType*> cells = BaseClass::SquareSearch(left_top, right_bottom);
         for(const CellType* cell : cells) {
             result.insert(result.end(), cell->begin(), cell->end());
         }
         return result;
     }
 
+    /// @brief Search cells in square, that defined by two points
+    /// @param left_top - left top corner 
+    /// @param right_bottom - right bottom corner
+    /// @return all data references in the square 
+    std::vector<RefType> SquareSearch(const DataType left_top[2], const DataType right_bottom[2]) const {
+        HashIndex2D lt_index = BaseClass::GetCellIndex(left_top);
+        HashIndex2D rb_index = BaseClass::GetCellIndex(right_bottom);
+        return SquareSearch(lt_index, rb_index);
+    }
+
     /// @brief Search cells in square, that defined in R2 space 
     /// @param center - square center
     /// @param half_size - half square size
     /// @return all data references in the square
-    std::vector<RefType> SquareSearch(const DataType center[2], float half_size) const {
-        std::vector<RefType> result;
-        HashIndex2D center_index = BaseClass::GetVoxelIndex(center);
+    std::vector<RefType> SquareSearch(const DataType center[2], DataType half_size) const {
+        HashIndex2D center_index = BaseClass::GetCellIndex(center);
         uint32_t half_size_i = half_size * BaseClass::GetInvVoxelSize();
-
         return SquareSearch(center_index, half_size_i);
     } 
-
 
     /// @brief Retrieve data from the cell 
     /// @param cell_index - cell index
@@ -72,7 +77,6 @@ public:
         if (cell) {
             result.insert(result.end(), cell->begin(), cell->end());
         }
-
         return result;
     }
 };

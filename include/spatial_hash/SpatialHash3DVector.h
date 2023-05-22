@@ -42,7 +42,19 @@ public:
     std::vector<RefType> CubeSearch(HashIndex3D center, int32_t half_size) const {
         std::vector<RefType> result;
         std::vector<const CellType*> cells = BaseClass::CubeSearch(center, half_size);
+        for(const CellType* cell : cells) {
+            result.insert(result.end(), cell->begin(), cell->end());
+        }
+        return result;
+    }
 
+    /// @brief Search all data references in specified cube. Cube parameters in discrete hash table space.
+    /// @param corner_min - first diagonal point
+    /// @param corner_max - second diagonal point
+    /// @return all data references in cube
+    std::vector<RefType> CubeSearch(HashIndex3D corner_min, HashIndex3D corner_max) const {
+        std::vector<RefType> result;
+        std::vector<const CellType*> cells = BaseClass::CubeSearch(corner_min, corner_max);
         for(const CellType* cell : cells) {
             result.insert(result.end(), cell->begin(), cell->end());
         }
@@ -53,13 +65,22 @@ public:
     /// @param center - central point 
     /// @param half_size - half cube size in R3
     /// @return all data references in cube
-    std::vector<RefType> CubeSearch(const DataType center[3], float half_size) const {
-        std::vector<RefType> result;
+    std::vector<RefType> CubeSearch(const DataType center[3], DataType half_size) const {
         HashIndex3D center_index = BaseClass::GetVoxelIndex(center);
         uint32_t half_size_i = half_size * BaseClass::GetInvVoxelSize();
-
         return CubeSearch(center_index, half_size_i);
     }
+
+    /// @brief Search all data references in specified cube. Cube parameters in R3 space.
+    /// @param corner_min - first diagonal point
+    /// @param corner_max - second diagonal point 
+    /// @return all data references in cube
+    std::vector<RefType> CubeSearch(const DataType corner_min[3], const DataType corner_max[3]) const {
+        HashIndex3D corner_min_i = BaseClass::GetVoxelIndex(corner_min);
+        HashIndex3D corner_max_i = BaseClass::GetVoxelIndex(corner_max);
+        return CubeSearch(corner_min_i, corner_max_i);
+    }
+
 };
 
 }

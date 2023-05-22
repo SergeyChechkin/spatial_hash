@@ -153,6 +153,35 @@ protected:
 
         return result;
     }
+
+    std::vector<const ContainerType*> CubeSearch(HashIndex3D corner_min, HashIndex3D corner_max) const {
+        std::vector<const ContainerType*> result;
+        
+        if (corner_max.x_ < corner_min.x_) {
+            std::swap(corner_min.x_, corner_max.x_);
+        }        
+        if (corner_max.y_ < corner_min.y_) {
+            std::swap(corner_min.y_, corner_max.y_);
+        }    
+        if (corner_max.z_ < corner_min.z_) {
+            std::swap(corner_min.z_, corner_max.z_);
+        }    
+
+        HashIndex3D grid_point;
+        for(grid_point.x_ = corner_min.x_; grid_point.x_ <= corner_max.x_; ++grid_point.x_) {
+            for(grid_point.y_ = corner_min.y_; grid_point.y_ <= corner_max.y_; ++grid_point.y_) {
+                for(grid_point.z_ = corner_min.z_; grid_point.z_ <= corner_max.z_; ++grid_point.z_) {            
+                    auto itr = table_.find(grid_point);
+                    if(table_.end() == itr) {
+                        continue;
+                    }
+                    result.push_back(&(itr->second));                
+                }
+            }
+        }
+
+        return result;
+    }
 };
 
 }
