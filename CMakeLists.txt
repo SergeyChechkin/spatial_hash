@@ -15,4 +15,17 @@ target_include_directories(${PROJECT_NAME} PRIVATE include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${EIGEN3_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${EIGEN3_LIBS})
 
+install(
+  DIRECTORY include/spatial_hash
+  DESTINATION include
+)
+install(
+  TARGETS ${PROJECT_NAME}
+  EXPORT ${PROJECT_NAME}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
+
 add_subdirectory(test)
