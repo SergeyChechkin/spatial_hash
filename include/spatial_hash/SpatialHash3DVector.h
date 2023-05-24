@@ -27,7 +27,7 @@ public:
     /// @return voxel references
     std::vector<RefType> GetVoxelData(HashIndex3D index) {        
         std::vector<RefType> result;
-        auto cell = BaseClass::GetCell(index);
+        auto cell = BaseClass::GetVoxel(index);
         if (cell) {
             result.insert(result.end(), cell->begin(), cell->end());
         }

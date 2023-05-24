@@ -19,6 +19,15 @@ TEST(SpatalHash2D, ConvertionTest) {
     ASSERT_EQ(0, hash(HashIndex2D(max_range, max_range)));
 }
 
+TEST(SpatialHashTable2DVector, SingleSellTest) { 
+    SpatialHashTable2DVector<float, size_t> hash_table(10);
+    float point[2] = {0, 0};
+    hash_table.Add(point, 1);
+    auto cell_idx = hash_table.GetCellIndex(point);
+    auto result = hash_table.GetCellData(cell_idx);
+    ASSERT_EQ(1, result.size());
+}
+
 TEST(SpatialHashTable2DVector, RandomSqareTest) { 
     SpatialHashTable2DVector<float, size_t> hash_table(10);
 
@@ -60,6 +69,15 @@ TEST(SpatialHashTable2DVector, RandomCircleTest) {
     float center[2] = {0, 0};
     auto result = hash_table.SquareSearch(center, radius);
     ASSERT_EQ(size, result.size());
+}
+
+TEST(SpatialHashTable3DVector, SingleVoxelTest) { 
+    SpatialHashTable3DVector<float, size_t> hash_table(10);
+    float point[3] = {0, 0, 0};
+    hash_table.Add(point, 1);
+    auto cell_idx = hash_table.GetVoxelIndex(point);
+    auto result = hash_table.GetVoxelData(cell_idx);
+    ASSERT_EQ(1, result.size());
 }
 
 TEST(SpatialHashTable3DVector, RandomCubeTest) { 
