@@ -4,7 +4,7 @@
 
 #include "spatial_hash/SpatialHash2DVector.h"
 #include "spatial_hash/SpatialHash3DVector.h"
-#include <eigen3/Eigen/Eigen>
+#include <Eigen/Core>
 #include <gtest/gtest.h>
 #include <random>
 
