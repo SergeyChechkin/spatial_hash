@@ -22,17 +22,18 @@ public:
 
 /// @brief Priority queue based contaner with size limit.
 /// @tparam RefType - associated data type 
-template<typename KeyT, typename RefType, unsigned int limit>
-class ContainerHeap : public std::priority_queue<std::pair<KeyT, RefType>, std::vector<std::pair<KeyT, RefType>>, std::greater<std::pair<KeyT, RefType>>>{
+template<typename KeyT, typename RefType>
+class ContainerHeap : public std::map<KeyT, RefType> {
+private:
+    using BaseClass = std::map<KeyT, RefType>;
 public:
-    using BaseClass = std::priority_queue<std::pair<KeyT, RefType>, std::vector<std::pair<KeyT, RefType>>, std::greater<std::pair<KeyT, RefType>>>;
-    void Add(KeyT key, const RefType& v) {
-        if (BaseClass::size() < limit || BaseClass::top().first < key) {
-            BaseClass::insert(key, v);
+    void Add(KeyT key, const RefType& v, size_t limit) {
+        if (BaseClass::size() < limit || BaseClass::begin()->first < key) {
+            BaseClass::emplace(key, v);
         } 
 
         while(BaseClass::size() > limit) {
-            BaseClass::pop();
+            BaseClass::erase(BaseClass::begin());
         }
     }
 };
